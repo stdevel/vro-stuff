@@ -1,0 +1,111 @@
+{
+	"variables": [],
+	"info": {
+		"name": "FlaskREST",
+		"_postman_id": "91c32742-d855-8b9d-721e-349286e0241e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Show users",
+			"request": {
+				"url": "http://localhost:5000/api/user/0",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\"id\": 1337,\"name\": \"Max Mustermann\"}\n}"
+				},
+				"description": "Shows all users"
+			},
+			"response": []
+		},
+		{
+			"name": "Show user",
+			"request": {
+				"url": "http://localhost:5000/api/user/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\"id\": 1337,\"name\": \"Max Mustermann\"}\n}"
+				},
+				"description": "Shows a particular user"
+			},
+			"response": []
+		},
+		{
+			"name": "Add user",
+			"request": {
+				"url": "http://localhost:5000/api/user",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\n\t\t\"id\": 1337,\n\t\t\"name\": \"Max Mustermann\",\n\t\t\"mail\": \"max@muster.foo\"\n\t}\n}"
+				},
+				"description": "Adds a new user"
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"request": {
+				"url": "http://localhost:5000/api/user/1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\"id\": 2325, \"name\": \"Paula Pinkepank\", \"mail\": \"ppink@bla.bar\"}\n}"
+				},
+				"description": "Updates an existing user"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"request": {
+				"url": "http://localhost:5000/api/user/1337",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Deletes an existing user"
+			},
+			"response": []
+		}
+	]
+}
