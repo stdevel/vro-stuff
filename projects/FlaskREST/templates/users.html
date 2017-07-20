@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<title>Users</title>
+</head>
+<body>
+<table>
+<tr>
+<td><b>ID</b></td>
+<td><b>User name</b></td>
+<td><b>User mail</b></td>
+<td colspan="2"><b>Action</b></td>
+</tr>
+
+{% for item in result.results %}
+<tr>
+<td><a href="/user/{{ item["id"] }}">{{ item["id"] }}</a></td>
+<td>{{ item["name"] }}</td>
+<td>{{ item["mail"] }}</td>
+<td><a href="/user/edit/{{ item["id"] }}">edit</a></td>
+<td><a href="/user/delete/{{ item["id"] }}">delete</a></td>
+</tr>
+{% endfor %}
+
+</table>
+</body>
+</html>

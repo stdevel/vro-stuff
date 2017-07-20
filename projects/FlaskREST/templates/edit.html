@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+<title>Edit user #{{ user.id }}</title>
+</head>
+<body>
+<form method="post" action="/user/edit/{{ user.id }}">
+User ID: <input name="id" type="number" value="{{ user.id }}"><br>
+User name: <input name="name" type="text" value="{{ user.name }}"><br>
+User mail: <input name="mail" type="text" value="{{ user.mail }}"><br>
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>
