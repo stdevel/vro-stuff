@@ -329,5 +329,5 @@ if __name__ == "__main__":
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
     #enable if you also like to live dangerously
-    app.run(debug=False, host="0.0.0.0")
-    #app.run(debug=False)
+    #app.run(debug=False, host="0.0.0.0")
+    app.run(debug=False)
