@@ -1,5 +1,5 @@
 # FlaskREST
-This is a simple REST application written in Python, powered by [Flask](http://flask.pocoo.org). It's magicness results in managing users with IDs, names and mail addresses - wow. It also offers a web interface for managing those information. This application is used in a workflow to access an external REST application. This project is part of a tutorial about developing web applications in python - [check it out](http://st-devel.net/pfar) on my blog.
+This is a simple REST application written in Python, powered by [Flask](http://flask.pocoo.org). It's magicness results in managing users with IDs, names and mail addresses - wow such functionality. It also offers a shitty web interface for managing those information. This application is used in a workflow to access an external REST application (*link will follow soon*). This project is part of a tutorial about developing web applications in python - [check it out on my blog](http://st-devel.net/pfar).
 
 ## Requirements
 For using FlaskREST, you will need:
