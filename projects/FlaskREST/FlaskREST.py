@@ -45,11 +45,11 @@ def return_result(result):
     """
     ret = {}
     if result:
-        ret["code"] = 0;
-        ret["message"] = "SUCCESS";
+        ret["code"] = 0
+        ret["message"] = "SUCCESS"
     else:
-        ret["code"] = 1;
-        ret["message"] = "FAILURE";
+        ret["code"] = 1
+        ret["message"] = "FAILURE"
     return json.dumps(ret)
 
 
@@ -274,7 +274,7 @@ def user_show(user_id):
     """
     #return a particular user
     print("Retrieve user #{}".format(user_id))
-    result = user_get(user_id);
+    result = user_get(user_id)
     return Response(json.dumps(result), mimetype="application/json")
 
 @app.route("/api/user", methods=["POST"])
