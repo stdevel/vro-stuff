@@ -1,0 +1,106 @@
+{
+	"variables": [],
+	"info": {
+		"name": "SimplePamREST",
+		"_postman_id": "91c32742-d855-8b9d-721e-349286e0241e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Show passwords",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\"id\": 1337,\"name\": \"Max Mustermann\"}\n}"
+				},
+				"url": "http://localhost:5000/api/password/0",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Show password",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\"id\": 1337,\"name\": \"Max Mustermann\"}\n}"
+				},
+				"url": "http://localhost:5000/api/password/1",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\n\t\t\"id\": 1337,\n\t\t\"name\": \"jason@giertz\",\n\t\t\"desc\": \"Jason user on giertz system\",\n\t\t\"hostname\": \"giertz.pinkepank.loc\",\n\t\t\"username\": \"jason\",\n\t\t\"password\": \"beammeup\"\n\t}\n}"
+				},
+				"url": "http://localhost:5000/api/password",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update password",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"item\": {\n\t\t\"id\": 2325,\n\t\t\"name\": \"max@giertz\",\n\t\t\"desc\": \"max user on giertz system\",\n\t\t\"hostname\": \"giertz.pinkepank.loc\",\n\t\t\"username\": \"max\",\n\t\t\"password\": \"forthelulz\"\n\t}\n}"
+				},
+				"url": "http://localhost:5000/api/password/1337",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete password",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://localhost:5000/api/password/1337",
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

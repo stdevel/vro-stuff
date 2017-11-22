@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+<title>Edit password #{{ passwd.id }}</title>
+</head>
+<body>
+<form method="post" action="/password/edit/{{ passwd.id }}">
+Password ID: <input name="id" type="number" value="{{ passwd.id }}"><br>
+Password name: <input name="name" type="text" value="{{ passwd.name }}"><br>
+Password description: <input name="desc" type="text" value="{{ passwd.desc }}"><br>
+Hostname: <input name="hostname" type="text" value="{{ passwd.hostname }}"><br>
+Username: <input name="username" type="text" value="{{ passwd.username }}"><br>
+Password: <input name="password" type="password"><br>
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>
