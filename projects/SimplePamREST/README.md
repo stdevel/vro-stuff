@@ -20,8 +20,8 @@ To make FlaskREST listen on other interfaces as well, edit the last lines of cod
 ```
 ...
 #enable if you also like to live dangerously
-app.run(debug=False, host="0.0.0.0")
-#app.run(debug=False)
+APP.run(debug=False, host="0.0.0.0")
+#APP.run(debug=False)
 ```
 
 Open http://localhost:5000/ to access the web interface for managing users.
