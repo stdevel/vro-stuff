@@ -1,3 +1,4 @@
+#Simple Flask-based PAM web application written in Python for demo purposes
 FROM centos:centos7
 MAINTAINER Christian Stankowic <info@stankowic-development.net>
 EXPOSE 5000

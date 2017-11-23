@@ -1,5 +1,6 @@
 # SimplePamREST
-This is a simple REST application written in Python, powered by [Flask](http://flask.pocoo.org). It can be used to manage passwords including IDs, names, descriptions, hostnames, usernames and passwords - wow such functionality. It also offers a shitty web interface for managing those information. This application is used in a workflow to access an external REST application (*link will follow soon*). This project is part of a tutorial about binding web applications to VMware vRealize Orchestrator using plug-ins or dynamic types (*blog link will follow soon*).
+This is a simple REST application written in Python, powered by [Flask](http://flask.pocoo.org). It can be used to manage passwords including IDs, names, descriptions, hostnames, usernames and passwords - wow such functionality. It also offers a shitty web interface for managing those information. This project is part of a tutorial about binding web applications to VMware vRealize Orchestrator using plug-ins or dynamic types (*blog link will follow soon*).
+Please, don't use this for something else than demonstration purposes - you really might want to have encryption for your passwords and so on.
 
 # Docker container
 In case you're too lazy to set-up everything on your own, go ahead with Docker.
@@ -20,8 +21,9 @@ $ docker run -i -p 5000:5000 simplepamrest
 ## Image on Docker Hub
 A pre-built image is available on Docker Hub. Get it while it's hot:
 ```
-$ docker pull ...
+$ docker pull stdevel/simplepamrest
 ```
+
 Afterwards, start the container and access the interface via http://localhost:5000:
 ```
 $ docker run -i -p 5000:5000 simplepamrest
