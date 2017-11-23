@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+A simple Flask-based PAM application that might be used for demo purposes.
+"""
+
 import json
 import sqlite3
 import atexit
 from flask import Flask, request, Response, render_template
-app = Flask(__name__)
+APP = Flask(__name__)
 
-#conn = None
-#cursor = None
+#DB_CONN = None
+#DB_CUR = None
 #TODO: implement database class to avoid globals?
 
 
@@ -18,11 +22,11 @@ def shutdown():
     This function ensures the database is gracefully closed when
     shutting down the application.
     """
-    global conn
+    global DB_CONN
 
     #close database
-    conn.commit()
-    conn.close()
+    DB_CONN.commit()
+    DB_CONN.close()
     print("Graceful shutdown, bye!")
 
 def get_data(data):
@@ -57,7 +61,7 @@ def return_result(result):
 #DATABASE FUNCTIONS
 #TODO: creating and editing users in ONE function?
 def pass_create(pass_id, pass_name, pass_desc, pass_hostname,
-    pass_username, pass_password):
+                pass_username, pass_password):
     """
     This function creates a password.
 
@@ -74,30 +78,38 @@ def pass_create(pass_id, pass_name, pass_desc, pass_hostname,
     :param pass_password: password
     :type pass_password: str
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     try:
-        cursor.execute("""INSERT INTO passwords (pass_id, pass_name, pass_desc,
+        DB_CUR.execute(
+            """INSERT INTO passwords (pass_id, pass_name, pass_desc,
             pass_hostname, pass_username, pass_password) VALUES (?, ?, ?,
             ?, ?, ?)""",
-            (pass_id, pass_name, pass_desc, pass_hostname, pass_username, pass_password)
+            (
+                pass_id, pass_name, pass_desc, pass_hostname, pass_username,
+                pass_password
+            )
         )
-        conn.commit()
-        print("Added password with name={},desc={},hostname={},username={},"
-                "password=xxx".format(
+        DB_CONN.commit()
+        print(
+            "Added password with name={},desc={},hostname={},username={},"
+            "password=xxx".format(
                 pass_name, pass_desc, pass_hostname, pass_username
-            ))
+            )
+            )
         return True
-    except Exception as e:
-        print("Unable to create user with name={},desc={},hostname={},"
+    except Exception as err:
+        print(
+            "Unable to create user with name={},desc={},hostname={},"
             "username={}: {}".format(
-            pass_name, pass_desc, pass_hostname, pass_username, e
-        ))
+                pass_name, pass_desc, pass_hostname, pass_username, err
+            )
+        )
         return False
 
 def pass_update(pass_id, pass_newid, pass_name, pass_desc, pass_hostname,
-    pass_username, pass_password):
+                pass_username, pass_password):
     """
     This function updates an user.
 
@@ -114,29 +126,36 @@ def pass_update(pass_id, pass_newid, pass_name, pass_desc, pass_hostname,
     :param pass_password: password
     :type pass_password: str
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     try:
-        cursor.execute("""UPDATE passwords
-            SET pass_id=?, pass_name=?, pass_desc=?, pass_hostname=?,
-            pass_username=?, pass_password=?
+        DB_CUR.execute(
+            """UPDATE passwords SET pass_id=?, pass_name=?, pass_desc=?,
+            pass_hostname=?, pass_username=?, pass_password=?
             WHERE pass_id=?""",
-            (pass_newid, pass_name, pass_desc, pass_hostname, pass_username,
-            pass_password, pass_id))
-        conn.commit()
-        print("Updated password #{} with id={},name={},desc={},hostname={},"
+            (
+                pass_newid, pass_name, pass_desc, pass_hostname, pass_username,
+                pass_password, pass_id
+            )
+        )
+        DB_CONN.commit()
+        print(
+            "Updated password #{} with id={},name={},desc={},hostname={},"
             "username={},password=xxx".format(
                 pass_id, pass_newid, pass_name, pass_desc,
                 pass_hostname, pass_username
-            ))
+            )
+        )
         return True
-    except Exception as e:
-        print("Unable to update password #{} with id={},name={},desc={},"
+    except Exception as err:
+        print(
+            "Unable to update password #{} with id={},name={},desc={},"
             "hostname={},username={}: {}".format(
-            pass_id, pass_newid, pass_name, pass_desc,
-            pass_hostname, pass_username, e
-        ))
+                pass_id, pass_newid, pass_name, pass_desc,
+                pass_hostname, pass_username, err
+            )
+        )
         return False
 
 def pass_remove(pass_id):
@@ -146,25 +165,24 @@ def pass_remove(pass_id):
     :param pass_id: password ID
     :type pass_id: int
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     print("About to remove password #{}".format(pass_id))
     try:
-        cursor.execute(
+        DB_CUR.execute(
             "DELETE FROM passwords WHERE pass_id=?",
             (pass_id,)
         )
-        conn.commit()
+        DB_CONN.commit()
         #check whether a password was removed
-        if cursor.rowcount > 0:
+        if DB_CUR.rowcount > 0:
             print("Removed password #{}".format(pass_id))
             return True
-        else:
-            return False
-    except Exception as e:
+        return False
+    except Exception as err:
         print("Unable to remove password #{}: {}".format(
-            pass_id, e
+            pass_id, err
         ))
         return False
 
@@ -175,25 +193,25 @@ def pass_get(pass_id):
     :param pass_id: password ID
     :type pass_id: int
     """
-    global cursor
+    global DB_CUR
 
     #execute database query
     if pass_id > 0:
         #return all passwords
-        cursor.execute(
+        DB_CUR.execute(
             "SELECT * FROM passwords WHERE pass_id=?;",
             (pass_id,)
         )
     else:
         #return one particular password
-        cursor.execute("SELECT * FROM passwords;")
+        DB_CUR.execute("SELECT * FROM passwords;")
 
     #prepare result
-    json={}
-    results=[]
-    temp={}
+    json = {}
+    results = []
+    temp = {}
     #get _all_ the information
-    for row in cursor:
+    for row in DB_CUR:
         temp[row[0]] = {}
         temp[row[0]]["id"] = row[0]
         temp[row[0]]["name"] = row[1]
@@ -208,32 +226,32 @@ def pass_get(pass_id):
 
 
 #FLASK FRONTEND FUNCTIONS
-@app.route("/")
+@APP.route("/")
 def index():
     """
     This function simply presents the main page.
     """
     return render_template("index.html")
 
-@app.route("/password/create", methods=["GET", "POST"])
+@APP.route("/password/create", methods=["GET", "POST"])
 def form_create():
     """
-    This function presents the form to create passwords and returns the API result.
+    This function presents the form to create passwords and returns the result.
     """
     if request.method == "POST":
         #create password
         if pass_create(
-            request.form["id"], request.form["name"], request.form["desc"],
-            request.form["hostname"], request.form["username"],
-            request.form["password"]):
+                request.form["id"], request.form["name"], request.form["desc"],
+                request.form["hostname"], request.form["username"],
+                request.form["password"]
+            ):
             return "Password created!"
-        else:
-            return "Password could not be created!"
+        return "Password could not be created!"
     else:
         #show form
         return render_template("create.html")
 
-@app.route("/password/", methods=["GET"])
+@APP.route("/password/", methods=["GET"])
 def form_users():
     """
     This function lists all passwords.
@@ -243,7 +261,7 @@ def form_users():
     #render users in HTML template
     return render_template("passwords.html", result=passwords)
 
-@app.route("/password/<int:pass_id>", methods=["GET"])
+@APP.route("/password/<int:pass_id>", methods=["GET"])
 def form_user(pass_id):
     """
     This function displays a particular password.
@@ -255,7 +273,7 @@ def form_user(pass_id):
     result = pass_get(pass_id)["results"][0]
     return render_template("pass.html", passwd=result)
 
-@app.route("/password/delete/<int:pass_id>", methods=["GET"])
+@APP.route("/password/delete/<int:pass_id>", methods=["GET"])
 def from_delete(pass_id):
     """
     This function deletes a particular password.
@@ -266,10 +284,9 @@ def from_delete(pass_id):
     #try to delete password
     if pass_delete(pass_id):
         return "Password deleted!"
-    else:
-        return "Password could not be deleted!"
+    return "Password could not be deleted!"
 
-@app.route("/password/edit/<int:pass_id>", methods=["GET", "POST"])
+@APP.route("/password/edit/<int:pass_id>", methods=["GET", "POST"])
 def form_edit(pass_id):
     """
     This function presents the form to edit passwordsw and returns form
@@ -281,14 +298,12 @@ def form_edit(pass_id):
     if request.method == "POST":
         #edit password
         if pass_update(
-            pass_id, request.form["id"],
-            request.form["name"], request.form["desc"],
-            request.form["hostname"], request.form["username"],
-            request.form["password"]
+                pass_id, request.form["id"], request.form["name"],
+                request.form["desc"], request.form["hostname"],
+                request.form["username"], request.form["password"]
             ):
             return "Password edited!"
-        else:
-            return "Password could not be edited!"
+        return "Password could not be edited!"
     else:
         #show form, preselect values
         result = pass_get(pass_id)["results"][0]
@@ -297,7 +312,7 @@ def form_edit(pass_id):
 
 
 #FLASK API FUNCTIONS
-@app.route("/api/password/<int:pass_id>", methods=["GET"])
+@APP.route("/api/password/<int:pass_id>", methods=["GET"])
 def pass_show(pass_id):
     """
     This function shows a particular password.
@@ -307,7 +322,7 @@ def pass_show(pass_id):
     result = pass_get(pass_id)
     return Response(json.dumps(result), mimetype="application/json")
 
-@app.route("/api/password", methods=["POST"])
+@APP.route("/api/password", methods=["POST"])
 def pass_add():
     """
     This function creates a new password.
@@ -321,7 +336,7 @@ def pass_add():
         json_data["item"]["username"], json_data["item"]["password"])
     return Response(return_result(result), mimetype="application/json")
 
-@app.route("/api/password/<int:pass_id>", methods=["PUT"])
+@APP.route("/api/password/<int:pass_id>", methods=["PUT"])
 def pass_change(pass_id):
     """
     This function updates a existing password.
@@ -340,7 +355,7 @@ def pass_change(pass_id):
     )
     return Response(return_result(result), mimetype="application/json")
 
-@app.route("/api/password/<int:pass_id>", methods=["DELETE"])
+@APP.route("/api/password/<int:pass_id>", methods=["DELETE"])
 def pass_delete(pass_id):
     """
     This function removes a password.
@@ -353,14 +368,14 @@ def pass_delete(pass_id):
     return Response(return_result(result), mimetype="application/json")
 
 if __name__ == "__main__":
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     #register atexit
     atexit.register(shutdown)
     #start database
-    conn = sqlite3.connect("passwords.db")
-    cursor = conn.cursor()
+    DB_CONN = sqlite3.connect("passwords.db")
+    DB_CUR = DB_CONN.cursor()
     #enable if you also like to live dangerously
     #app.run(debug=False, host="0.0.0.0")
-    app.run(debug=False)
+    APP.run(debug=False)
