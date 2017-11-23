@@ -8,7 +8,7 @@ For using FlaskREST, you will need:
 - SQLite3
 
 ## Usage
-Simply start the script: 
+Simply start the script:
 ```
 $ ./FlaskREST.py
  * Running on http://localhost:5000/
@@ -20,8 +20,8 @@ To make FlaskREST listen on other interfaces as well, edit the last lines of cod
 ```
 ...
 #enable if you also like to live dangerously
-app.run(debug=False, host="0.0.0.0")
-#app.run(debug=False)
+APP.run(debug=False, host="0.0.0.0")
+#APP.run(debug=False)
 ```
 
 Open http://localhost:5000/ to access the web interface for managing users.
@@ -31,7 +31,7 @@ If you want to recreate the demo database, remove it and execute ``db.py``:
 $ rm users.db
 $ ./db.py
 ```
- 
+
 ## API calls
 The API implements the following calls:
 
