@@ -1,7 +1,33 @@
 # SimplePamREST
 This is a simple REST application written in Python, powered by [Flask](http://flask.pocoo.org). It can be used to manage passwords including IDs, names, descriptions, hostnames, usernames and passwords - wow such functionality. It also offers a shitty web interface for managing those information. This application is used in a workflow to access an external REST application (*link will follow soon*). This project is part of a tutorial about binding web applications to VMware vRealize Orchestrator using plug-ins or dynamic types (*blog link will follow soon*).
 
-## Requirements
+# Docker container
+In case you're too lazy to set-up everything on your own, go ahead with Docker.
+
+## Build image
+This repository contains a Dockerfile, simply build the image:
+```
+$ git clone https://github.com/stdevel/vro-stuff.git
+$ cd vro-stuff/projects/SimplePamREST/simplepamrest
+$ docker build -t simplepamrest .
+```
+
+Afterwards, start the container and access the interface via http://localhost:5000:
+```
+$ docker run -i -p 5000:5000 simplepamrest
+```
+
+## Image on Docker Hub
+A pre-built image is available on Docker Hub. Get it while it's hot:
+```
+$ docker pull ...
+```
+Afterwards, start the container and access the interface via http://localhost:5000:
+```
+$ docker run -i -p 5000:5000 simplepamrest
+```
+
+# Installation requirements
 For using SimplePamREST, you will need:
 - Python 2 or 3
 - Flask
@@ -32,7 +58,7 @@ $ rm password.db
 $ ./db.py
 ```
 
-## API calls
+# API calls
 The API implements the following calls:
 
 | Call | Method | Description |
@@ -44,7 +70,10 @@ The API implements the following calls:
 | ``/api/password/1337`` | ``DELETE`` | Removes a password by ID |
 | ``/api/password/0`` | ``GET`` | Retrieves a password by ID |
 
-### Examples
+## Postman catalog
+In case you want to test things with [Postman](https://getpostman.com), [a catalog](SimplePamREST.postman_collection.json) is part of this repository.
+
+## Examples
 Retrieving a password: ``GET /api/password/1``
 ```
 {
