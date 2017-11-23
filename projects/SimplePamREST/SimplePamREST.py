@@ -381,5 +381,5 @@ if __name__ == "__main__":
     DB_CONN = sqlite3.connect("passwords.db")
     DB_CUR = DB_CONN.cursor()
     #enable if you also like to live dangerously
-    #app.run(debug=False, host="0.0.0.0")
+    #APP.run(debug=False, host="0.0.0.0")
     APP.run(debug=False)
