@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+A simple Flask-based user management application that might be used for demos.
+"""
 import json
 import sqlite3
 import atexit
 from flask import Flask, request, Response, render_template
-app = Flask(__name__)
+APP = Flask(__name__)
 
-#conn = None
-#cursor = None
+#DB_CONN = None
+#DB_CUR = None
 #TODO: implement database class to avoid globals?
 
 
@@ -18,11 +21,11 @@ def shutdown():
     This function ensures the database is gracefully closed when
     shutting down the application.
     """
-    global conn
+    global DB_CONN
 
     #close database
-    conn.commit()
-    conn.close()
+    DB_CONN.commit()
+    DB_CONN.close()
     print("Graceful shutdown, bye!")
 
 def get_data(data):
@@ -67,22 +70,25 @@ def user_create(user_id, user_name, user_mail):
     :param user_mail: user mail
     :type user_mail: str
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     try:
-        cursor.execute("""INSERT INTO users (user_id, user_name, user_mail)
+        DB_CUR.execute(
+            """INSERT INTO users (user_id, user_name, user_mail)
             VALUES (?, ?, ?)""",
             (user_id, user_name, user_mail)
         )
-        conn.commit()
-        print("Added user #{} with name={},mail={}".format(
+        DB_CONN.commit()
+        print(
+            "Added user #{} with name={},mail={}".format(
                 user_id, user_name, user_mail
-            ))
+            )
+            )
         return True
-    except Exception as e:
+    except Exception as err:
         print("Unable to create user #{} with name={},mail={}: {}".format(
-            user_id, user_name, user_mail, e
+            user_id, user_name, user_mail, err
         ))
         return False
 
@@ -97,22 +103,26 @@ def user_update(user_id, user_newid, user_name, user_mail):
     :param user_mail: user mail
     :type user_mail: str
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     try:
-        cursor.execute("""UPDATE users
-            SET user_id=?, user_name=?, user_mail=?
-            WHERE user_id=?""",
-            (user_newid, user_name, user_mail, user_id))
-        conn.commit()
-        print("Updated user #{} with id={},name={},mail={}".format(
+        DB_CUR.execute(
+            """UPDATE users SET user_id=?, user_name=?, user_mail=?
+            WHERE user_id=?""", (
+                user_newid, user_name, user_mail, user_id
+            )
+        )
+        DB_CONN.commit()
+        print(
+            "Updated user #{} with id={},name={},mail={}".format(
                 user_id, user_newid, user_name, user_mail
-            ))
+            )
+            )
         return True
-    except Exception as e:
+    except Exception as err:
         print("Unable to update user #{} with id={},name={},mail={}: {}".format(
-            user_id, user_newid, user_name, user_mail, e
+            user_id, user_newid, user_name, user_mail, err
         ))
         return False
 
@@ -123,25 +133,24 @@ def user_remove(user_id):
     :param user_id: user ID
     :type user_id: int
     """
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     print("About to remove user #{}".format(user_id))
     try:
-        cursor.execute(
+        DB_CUR.execute(
             "DELETE FROM users WHERE user_id=?",
             (user_id,)
         )
-        conn.commit()
+        DB_CONN.commit()
         #check whether an user was removed
-        if cursor.rowcount > 0:
+        if DB_CUR.rowcount > 0:
             print("Removed user #{}".format(user_id))
             return True
-        else:
-            return False
-    except Exception as e:
+        return False
+    except Exception as err:
         print("Unable to remove user #{}: {}".format(
-            user_id, e
+            user_id, err
         ))
         return False
 
@@ -152,25 +161,25 @@ def user_get(user_id):
     :param user_id: user ID
     :type user_id: int
     """
-    global cursor
+    global DB_CUR
 
     #execute database query
     if user_id > 0:
         #return all users
-        cursor.execute(
+        DB_CUR.execute(
             "SELECT * FROM users WHERE user_id=?;",
             (user_id,)
         )
     else:
         #return one particular user
-        cursor.execute("SELECT * FROM users;")
+        DB_CUR.execute("SELECT * FROM users;")
 
     #prepare result
-    json={}
-    results=[]
-    temp={}
+    json = {}
+    results = []
+    temp = {}
     #get _all_ the information
-    for row in cursor:
+    for row in DB_CUR:
         temp[row[0]] = {}
         temp[row[0]]["id"] = row[0]
         temp[row[0]]["name"] = row[1]
@@ -182,14 +191,14 @@ def user_get(user_id):
 
 
 #FLASK FRONTEND FUNCTIONS
-@app.route("/")
+@APP.route("/")
 def index():
     """
     This function simply presents the main page.
     """
     return render_template("index.html")
 
-@app.route("/user/create", methods=["GET", "POST"])
+@APP.route("/user/create", methods=["GET", "POST"])
 def form_create():
     """
     This function presents the form to create users and returns the API result.
@@ -197,16 +206,15 @@ def form_create():
     if request.method == "POST":
         #create user
         if user_create(
-            request.form["id"], request.form["name"],
-            request.form["mail"]):
+                request.form["id"], request.form["name"], request.form["mail"]
+            ):
             return "User created!"
-        else:
-            return "User could not be created!"
+        return "User could not be created!"
     else:
         #show form
         return render_template("create.html")
 
-@app.route("/user/", methods=["GET"])
+@APP.route("/user/", methods=["GET"])
 def form_users():
     """
     This function lists all users.
@@ -216,7 +224,7 @@ def form_users():
     #render users in HTML template
     return render_template("users.html", result=users)
 
-@app.route("/user/<int:user_id>", methods=["GET"])
+@APP.route("/user/<int:user_id>", methods=["GET"])
 def form_user(user_id):
     """
     This function displays a particular user.
@@ -228,7 +236,7 @@ def form_user(user_id):
     result = user_get(user_id)["results"][0]
     return render_template("user.html", user=result)
 
-@app.route("/user/delete/<int:user_id>", methods=["GET"])
+@APP.route("/user/delete/<int:user_id>", methods=["GET"])
 def from_delete(user_id):
     """
     This function deletes a particular user.
@@ -239,10 +247,9 @@ def from_delete(user_id):
     #try to delete user
     if user_delete(user_id):
         return "User deleted!"
-    else:
-        return "User could not be deleted!"
+    return "User could not be deleted!"
 
-@app.route("/user/edit/<int:user_id>", methods=["GET", "POST"])
+@APP.route("/user/edit/<int:user_id>", methods=["GET", "POST"])
 def form_edit(user_id):
     """
     This function presents the form to edit users and returns form
@@ -254,20 +261,23 @@ def form_edit(user_id):
     if request.method == "POST":
         #edit user
         if user_update(
-            user_id, request.form["id"],
-            request.form["name"], request.form["mail"]):
+                user_id, request.form["id"], request.form["name"],
+                request.form["mail"]
+            ):
             return "User edited!"
-        else:
-            return "User could not be edited!"
+        return "User could not be edited!"
     else:
         #show form, preselect values
-        result = user_get(user_id)["results"][0]
-        return render_template("edit.html", user=result)
+        try:
+            result = user_get(user_id)["results"][0]
+            return render_template("edit.html", user=result)
+        except IndexError:
+            return render_template("nonexist.html")
 
 
 
 #FLASK API FUNCTIONS
-@app.route("/api/user/<int:user_id>", methods=["GET"])
+@APP.route("/api/user/<int:user_id>", methods=["GET"])
 def user_show(user_id):
     """
     This function shows a particular user.
@@ -277,7 +287,7 @@ def user_show(user_id):
     result = user_get(user_id)
     return Response(json.dumps(result), mimetype="application/json")
 
-@app.route("/api/user", methods=["POST"])
+@APP.route("/api/user", methods=["POST"])
 def user_add():
     """
     This function creates a new user.
@@ -290,7 +300,7 @@ def user_add():
         json_data["item"]["mail"])
     return Response(return_result(result), mimetype="application/json")
 
-@app.route("/api/user/<int:user_id>", methods=["PUT"])
+@APP.route("/api/user/<int:user_id>", methods=["PUT"])
 def user_change(user_id):
     """
     This function updates an existing user.
@@ -307,7 +317,7 @@ def user_change(user_id):
     )
     return Response(return_result(result), mimetype="application/json")
 
-@app.route("/api/user/<int:user_id>", methods=["DELETE"])
+@APP.route("/api/user/<int:user_id>", methods=["DELETE"])
 def user_delete(user_id):
     """
     This function removes an user.
@@ -320,14 +330,14 @@ def user_delete(user_id):
     return Response(return_result(result), mimetype="application/json")
 
 if __name__ == "__main__":
-    global conn
-    global cursor
+    global DB_CONN
+    global DB_CUR
 
     #register atexit
     atexit.register(shutdown)
     #start database
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
+    DB_CONN = sqlite3.connect("users.db")
+    DB_CUR = DB_CONN.cursor()
     #enable if you also like to live dangerously
-    #app.run(debug=False, host="0.0.0.0")
-    app.run(debug=False)
+    #APP.run(debug=False, host="0.0.0.0")
+    APP.run(debug=False)
