@@ -306,8 +306,12 @@ def form_edit(pass_id):
         return "Password could not be edited!"
     else:
         #show form, preselect values
-        result = pass_get(pass_id)["results"][0]
-        return render_template("edit.html", passwd=result)
+        #result = pass_get(pass_id)["results"][0]
+        try:
+            result = pass_get(pass_id)["results"][0]
+            return render_template("edit.html", passwd=result)
+        except IndexError:
+            return render_template("nonexist.html")
 
 
 
