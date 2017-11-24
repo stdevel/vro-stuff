@@ -19,7 +19,7 @@ $ docker run -i -p 5000:5000 simplepamrest
 ```
 
 ## Image on Docker Hub
-A pre-built image is available on Docker Hub. Get it while it's hot:
+A pre-built image is available on [Docker Hub](https://hub.docker.com/r/stdevel/simplepamrest/). Get it while it's hot:
 ```
 $ docker pull stdevel/simplepamrest
 ```
